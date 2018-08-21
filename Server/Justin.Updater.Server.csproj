@@ -181,6 +181,7 @@
     <Content Include="Views\Home\Log.cshtml" />
     <Content Include="Views\Home\LogContent.cshtml" />
     <Content Include="Views\Home\PingList.cshtml" />
+    <Content Include="Views\Shared\404.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

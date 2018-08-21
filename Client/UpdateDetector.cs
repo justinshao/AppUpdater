@@ -19,8 +19,7 @@ namespace Justin.Updater.Client
         
         private string GetCurrentVer()
         {
-            string url = string.Format("{0}/api/DetectVer/{1}",
-                            updateUrlInfo.Host, updateUrlInfo.SystemId);
+            string url = $"{updateUrlInfo.Host}/api/DetectVer/{updateUrlInfo.SystemId}";
 
             using (var resp = Util.CreateHttpRequest(url).GetResponse())
             {
@@ -31,9 +30,9 @@ namespace Justin.Updater.Client
             }
         }
 
-        public void EnablePrompt(int timeout)
+        public void DelayPrompt(int delay)
         {
-            this.promptTime = DateTime.Now.AddMilliseconds(timeout);
+            this.promptTime = DateTime.Now.AddMilliseconds(delay);
         }
 
         public override void Do()
@@ -60,7 +59,7 @@ namespace Justin.Updater.Client
             }
         }
 
-        protected override void Starting()
+        protected override void OnStarting()
         {
             currVer = GetCurrentVer();
         }

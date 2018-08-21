@@ -16,19 +16,19 @@ namespace Justin.Updater.Server
         /// <summary>
         /// 已安装更新包对应的后缀名
         /// </summary>
-        public const string InstalledPkgExt = ".$install";
+        public static readonly string InstalledPkgExt = ".$install";
         /// <summary>
         /// 安装时新增文件对应的备份文件后缀名
         /// </summary>
-        public const string AddedFileExt = ".$add";
+        public static readonly string AddedFileExt = ".$add";
         /// <summary>
         /// 以该后缀名结束的上传文件代表要删除服务器上对应的文件
         /// </summary>
-        public const string InstallDeleteFileExt = ".$del";
+        public static readonly string InstallDeleteFileExt = ".$del";
         /// <summary>
         /// 锁定更新包的后缀名
         /// </summary>
-        public const string SystemLockFileExt = ".$lock";
+        public static readonly string SystemLockFileExt = ".$lock";
         
         /// <summary>
         /// 未安装的更新包名规则
@@ -42,17 +42,6 @@ namespace Justin.Updater.Server
         #region 更新系统增删改查
         public static IList<Models.System> GetSystems()
         {
-            //using (var db = DbHelper.GetDatabase())
-            //{
-            //    return db.Query("SELECT ID, NAME FROM SYS_AUTO_UPDATER_SYSTEM",
-            //        (r) => new Models.System
-            //        {
-            //            Id = Convert.ToInt32(r["ID"]),
-            //            Name = r["NAME"].ToString(),
-            //            UpdateDetectEnabled = UpdateDetectEnabled(Convert.ToInt32(r["ID"]))
-            //        });
-            //}
-
             var systemsFile = GetSystemsFile();
 
             if(File.Exists(systemsFile))
@@ -71,18 +60,6 @@ namespace Justin.Updater.Server
         public static void SaveSystems(IList<Models.System> systems)
         {
             var systemsFile = GetSystemsFile();
-
-            //using (var writer = new BinaryWriter(File.Create(jsonFile), Encoding.UTF8))
-            //{
-            //    writer.Write(runInfo.Ver);
-            //    writer.Write(runInfo.RunFiles.Count);
-
-            //    foreach (var e in runInfo.RunFiles)
-            //    {
-            //        writer.Write(e.Key);
-            //        writer.Write(e.Value);
-            //    }
-            //}
 
             var fileInfo = new FileInfo(systemsFile);
 
@@ -105,27 +82,10 @@ namespace Justin.Updater.Server
 
         public static Models.System GetSystem(int id)
         {
-            //using (var db = DbHelper.GetDatabase())
-            //{
-            //    return db.QuerySingle("SELECT ID, NAME FROM SYS_AUTO_UPDATER_SYSTEM WHERE ID=:id",
-            //        (r) => new Models.System { Id = Convert.ToInt32(r["ID"]), Name = r["NAME"].ToString(), },
-            //        new DbParameter("id", id));
-            //}
-
             return GetSystems().FirstOrDefault(s => s.Id == id);
         }
         public static void AddSystem(string name, int empId)
         {
-            //using (var db = DbHelper.GetDatabase())
-            //{
-            //    var max_id = db.QueryScalar<int>("SELECT NVL(MAX(ID),0) FROM SYS_AUTO_UPDATER_SYSTEM");
-
-            //    db.ExcuteNonQuery(@"INSERT INTO SYS_AUTO_UPDATER_SYSTEM 
-            //                                (ID, NAME, CHANGE_EMPID, CHANGE_TIME) 
-            //                        VALUES (:id, :name, :empId, sysdate)",
-            //        new DbParameter("id", max_id + 1), new DbParameter("name", name), new DbParameter("empId", empId));
-            //}
-
             var systems = GetSystems();
             var maxId = systems.Any() ? systems.Max(s => s.Id) : 0;
             systems.Add(new Models.System { Id = maxId + 1, Name = name });
@@ -145,15 +105,6 @@ namespace Justin.Updater.Server
             system.Name = name;
 
             SaveSystems(systems);
-
-            //using (var db = DbHelper.GetDatabase())
-            //{
-            //    var ret = db.ExcuteNonQuery(@"UPDATE SYS_AUTO_UPDATER_SYSTEM SET NAME=:name, 
-            //        CHANGE_EMPID=:empId, CHANGE_TIME=SYSDATE WHERE ID=:id",
-            //        new DbParameter("id", id), 
-            //        new DbParameter("name", name), 
-            //        new DbParameter("empId", empId));
-            //}
         }
         public static void DeleteSystem(int systemId)
         {
@@ -180,12 +131,6 @@ namespace Justin.Updater.Server
 
             systems.Remove(system);
             SaveSystems(systems);
-
-            //using (var db = DbHelper.GetDatabase())
-            //{
-            //    db.ExcuteNonQuery("DELETE FROM SYS_AUTO_UPDATER_SYSTEM WHERE ID=:id",
-            //        new DbParameter("id", systemId));
-            //}
         }
         #endregion
 
@@ -743,8 +688,7 @@ namespace Justin.Updater.Server
         /// </summary>
         /// <param name="id"></param>
         /// <param name="clientId"></param>
-        /// <param name="cmd"></param>
-        /// <param name="args"></param>
+        /// <param name="command"></param>
         public static void SetCommand(int id, string clientId, ClientCommand command)
         {
             var cmdFile = GetClientCommandFile(id, clientId);

@@ -433,7 +433,7 @@ namespace Justin.Updater.Client
 
         private void IgnoreUpdate()
         {
-            this._updateDetector.EnablePrompt(_config.PromptInterval * 60 * 1000);
+            this._updateDetector.DelayPrompt(_config.PromptInterval * 60 * 1000);
         }
 
         /// <summary>

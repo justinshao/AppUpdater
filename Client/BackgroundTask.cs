@@ -12,22 +12,21 @@ namespace Justin.Updater.Client
 
         public BackgroundTask(int interval, bool restartOnError)
         {
-            this.interval = Math.Max(interval, _sleep);
-            this.restartOnError = restartOnError;
+            this.Interval = Math.Max(interval, _sleep);
+            this._restartOnError = restartOnError;
         }
 
         public event Action<BackgroundTask> OnStart;
         public event Action<BackgroundTask> OnStop;
 
-        private static int defaultInterval = 5000;
+        private static readonly int defaultInterval = 5000;
 
-        private int _sleep = 1000;
-        private bool _starting = false;
-        private int interval = defaultInterval;
-        private bool restartOnError;
+        private readonly int _sleep = 1000;
+        private readonly bool _restartOnError;
 
-        protected int Interval { get { return interval; } }
-        public bool IsStarted { get { return _starting; } }
+        protected int Interval { get; } = defaultInterval;
+        public bool IsStarted { get; private set; } = false;
+
         public void Start()
         {
             StartMain();
@@ -36,25 +35,27 @@ namespace Justin.Updater.Client
         }
         public void Stop()
         {
-            _starting = false;
+            IsStarted = false;
         }
         private void StartMain()
         {
-            ThreadPool.QueueUserWorkItem(MainTask);
+            ThreadPool.QueueUserWorkItem(_ => {
+                IsStarted = true;
 
-            _starting = true;
+                MainTask();
+            });
         }
-        private void MainTask(object state)
+        private void MainTask()
         {
             try
             {
-                Starting();
+                OnStarting();
                 
-                var pre = DateTime.Now;
+                var pre = DateTime.Now.AddMilliseconds(-Interval);
 
-                while (_starting)
+                while (IsStarted)
                 {
-                    if(DateTime.Now >= pre.AddMilliseconds(interval))
+                    if(DateTime.Now >= pre.AddMilliseconds(Interval))
                     {
                         Do();
 
@@ -64,7 +65,7 @@ namespace Justin.Updater.Client
                     Thread.Sleep(_sleep);
                 }
 
-                Stopping();
+                OnStopping();
 
                 OnStop?.Invoke(this);
             }
@@ -73,7 +74,7 @@ namespace Justin.Updater.Client
                 OnError(ex);
 
                 // 遇到未处理异常自动重启
-                if (_starting && restartOnError)
+                if (IsStarted && _restartOnError)
                 {
                     // 有可能的连续异常导致日志膨胀
                     Thread.Sleep(30 * 1000);
@@ -85,8 +86,8 @@ namespace Justin.Updater.Client
 
         public abstract void Do();
 
-        protected virtual void Starting() { }
-        protected virtual void Stopping() { }
+        protected virtual void OnStarting() { }
+        protected virtual void OnStopping() { }
         protected virtual void OnError(Exception ex)
         {
 

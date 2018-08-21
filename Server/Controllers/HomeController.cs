@@ -11,6 +11,13 @@ namespace Justin.Updater.Server.Controllers
     {
         [HttpGet]
         [LoginRequired]
+        public ActionResult Index()
+        {
+            return RedirectToAction(nameof(SystemList));
+        }
+
+        [HttpGet]
+        [LoginRequired]
         public ActionResult SystemList()
         {
             var model = new SystemListViewModel
@@ -29,7 +36,7 @@ namespace Justin.Updater.Server.Controllers
 
             if(system == null)
             {
-                return HttpNotFound();
+                return NotFound();
             }
 
             var perPage = 10;
@@ -54,7 +61,7 @@ namespace Justin.Updater.Server.Controllers
 
             if(system == null)
             {
-                return HttpNotFound();
+                return NotFound();
             }
 
             var config = SysUpdateHelper.GetSystemConfig(id);
@@ -72,7 +79,7 @@ namespace Justin.Updater.Server.Controllers
             SysUpdateHelper.UpdateDetect(id, enabled: config.DetectEnabled);
             SysUpdateHelper.SaveSystemConfig(id, config);
 
-            return RedirectToAction("SystemList");
+            return RedirectToAction(nameof(SystemList));
         }
 
         [HttpGet]
@@ -83,7 +90,7 @@ namespace Justin.Updater.Server.Controllers
 
             if(system == null)
             {
-                return HttpNotFound();
+                return NotFound();
             }
 
             if(date == null)
@@ -154,14 +161,14 @@ namespace Justin.Updater.Server.Controllers
 
             if (system == null)
             {
-                return HttpNotFound();
+                return NotFound();
             }
 
             var file = SysUpdateHelper.GetSystemLogFile(id, date ?? DateTime.Now, fileName);
             
             if(file == null)
             {
-                return HttpNotFound();
+                return NotFound();
             }
 
             using (var reader = file.OpenText())
@@ -180,17 +187,17 @@ namespace Justin.Updater.Server.Controllers
 
             if (system == null)
             {
-                return HttpNotFound();
+                return NotFound();
             }
 
             var file = SysUpdateHelper.GetSystemLogFile(id, date ?? DateTime.Now, fileName);
 
             if (file == null)
             {
-                return HttpNotFound();
+                return NotFound();
             }
 
-            return File(file.OpenRead(), "text/plain", file.Name);
+            return File(file.FullName, "text/plain", file.Name);
         }
 
         [HttpGet]
@@ -201,7 +208,7 @@ namespace Justin.Updater.Server.Controllers
 
             if (system == null)
             {
-                return HttpNotFound();
+                return NotFound();
             }
 
             var now = DateTime.Now;
@@ -209,11 +216,6 @@ namespace Justin.Updater.Server.Controllers
             var config = SysUpdateHelper.GetSystemConfig(id);
             var clientApps = SystemUpdaterCollection.GetClientApps(id)
                 .Where(c => string.IsNullOrEmpty(clientName) || c.ClientId.Contains(clientName));
-
-            //foreach (var c in clientApps)
-            //{
-            //    c.Command = SysUpdateHelper.GetCommand(id, c.ClientId);
-            //}
 
             var model = new SystemPingListViewModel
             {
@@ -234,7 +236,7 @@ namespace Justin.Updater.Server.Controllers
 
             if(system == null)
             {
-                return HttpNotFound();
+                return NotFound();
             }
 
             var model = new SystemEditViewModel
@@ -253,7 +255,7 @@ namespace Justin.Updater.Server.Controllers
         {
             SysUpdateHelper.SaveSystem(id, name, Oper.Id);
 
-            return RedirectToAction("SystemList");
+            return RedirectToAction(nameof(SystemList));
         }
 
         [HttpGet]
@@ -289,7 +291,7 @@ namespace Justin.Updater.Server.Controllers
             {
                 SysUpdateHelper.AddSystem(name, Oper.Id);
 
-                return RedirectToAction("SystemList");
+                return RedirectToAction(nameof(SystemList));
             }
         }
 
@@ -300,7 +302,7 @@ namespace Justin.Updater.Server.Controllers
             var model = new ConfirmViewModel
             {
                 Message = "删除系统将同时删除和它相关的所有运行文件及更新包，是否继续？",
-                OkUrl = Url.RouteUrl("Home", new { action = "Delete", id = id, }),
+                OkUrl = Url.RouteUrl("Home", new { action = "Delete", id, }),
                 CancelUrl = Url.RouteUrl("Home", new { action = "SystemList", }),
             };
             ViewBag.Title = "删除系统信息";
@@ -314,7 +316,7 @@ namespace Justin.Updater.Server.Controllers
         {
             SysUpdateHelper.DeleteSystem(id);
 
-            return RedirectToAction("SystemList");
+            return RedirectToAction(nameof(SystemList));
         }
 
         [HttpGet]
@@ -323,7 +325,7 @@ namespace Justin.Updater.Server.Controllers
         {
             SysUpdateHelper.UpdateDetect(id, enabled: e);
 
-            return RedirectToAction("SystemList");
+            return RedirectToAction(nameof(SystemList));
         }
 
         [HttpGet]
@@ -347,7 +349,7 @@ namespace Justin.Updater.Server.Controllers
                 }
                 else
                 {
-                    return Redirect("/");
+                    return RedirectToAction(nameof(Index));
                 }
             }
             catch (Exception ex)

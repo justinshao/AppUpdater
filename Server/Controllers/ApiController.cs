@@ -8,7 +8,7 @@ namespace Justin.Updater.Server.Controllers
 {
     public class ApiController : JsonController
     {
-        private static object s_opLock = new object();
+        private static readonly object s_opLock = new object();
 
         #region 服务端更新包相关接口
         /// <summary>
@@ -33,7 +33,7 @@ namespace Justin.Updater.Server.Controllers
             if (pkgName.StartsWith("$"))
                 return Error("文件名不能以 $ 开头");
             if(pkgName.EndsWith(SysUpdateHelper.InstalledPkgExt))
-                return Error(string.Format("文件名不能以 {0} 结尾", SysUpdateHelper.InstalledPkgExt));
+                return Error($"文件名不能以 {SysUpdateHelper.InstalledPkgExt} 结尾");
             if (!pkgName.EndsWith(".zip"))
                 return Error("文件名必须以 .zip 结尾");
             
@@ -47,14 +47,13 @@ namespace Justin.Updater.Server.Controllers
                 SysUpdateHelper.SaveUploadPkg(id, pkgName, file.InputStream);
 
                 var span = DateTime.Now - start;
-                LogHelper.LogInfo(string.Format("更新包 system{0}/{1} 上传成功。耗时： {2}小时{3}分钟{4}秒",
-                    id, pkgName, span.Hours, span.Minutes, span.Seconds));
+                LogHelper.LogInfo($"更新包 system{id}/{pkgName} 上传成功。耗时： {span.Hours}小时{span.Minutes}分钟{span.Seconds}秒");
 
                 return Success();
             }
             catch (Exception ex)
             {
-                LogHelper.LogError(string.Format("更新包 system{0}/{1} 上传失败", id, pkgName), ex);
+                LogHelper.LogError($"更新包 system{id}/{pkgName} 上传失败", ex);
 
                 return Error(ex.Message);
             }
@@ -90,8 +89,7 @@ namespace Justin.Updater.Server.Controllers
                 SysUpdateHelper.InstallPkg(id, pkgId);
 
                 var span = DateTime.Now - start;
-                LogHelper.LogInfo(string.Format("更新包 system{0}/{1} 安装成功。耗时： {2}小时{3}分钟{4}秒", 
-                    id, pkgName, span.Hours, span.Minutes, span.Seconds));
+                LogHelper.LogInfo($"更新包 system{id}/{pkgName} 安装成功。耗时： {span.Hours}小时{span.Minutes}分钟{span.Seconds}秒");
 
                 SysUpdateHelper.TouchDetect(id);
 
@@ -99,7 +97,7 @@ namespace Justin.Updater.Server.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.LogError(string.Format("更新包 system{0}/{1} 安装失败", id, pkgName), ex);
+                LogHelper.LogError($"更新包 system{id}/{pkgName} 安装失败", ex);
 
                 return Error(ex.Message);
             }
@@ -122,8 +120,8 @@ namespace Justin.Updater.Server.Controllers
             if (!SysUpdateHelper.IsPkgInstalled(id, pkgId))
                 return Error("未安装该更新包");
 
-            //if (!SysUpdateHelper.IsLatestInstalledPkg(id, pkgId))
-            //    return Error("不能跳过最近安装的更新包，如想还原该更新包，请依次还原最近的更新包");
+            if (!SysUpdateHelper.IsLatestInstalledPkg(id, pkgId))
+                return Error("不能跳过最近安装的更新包，如想还原该更新包，请依次还原最近的更新包");
 
             string pkgName = null;
             try
@@ -137,8 +135,7 @@ namespace Justin.Updater.Server.Controllers
                 SysUpdateHelper.RestorePkg(id, pkgId);
 
                 var span = DateTime.Now - start;
-                LogHelper.LogInfo(string.Format("更新包 system{0}/{1} 还原成功。耗时： {2}小时{3}分钟{4}秒",
-                    id, pkgName, span.Hours, span.Minutes, span.Seconds));
+                LogHelper.LogInfo($"更新包 system{id}/{pkgName} 还原成功。耗时： {span.Hours}小时{span.Minutes}分钟{span.Seconds}秒");
 
                 SysUpdateHelper.TouchDetect(id);
 
@@ -146,7 +143,7 @@ namespace Justin.Updater.Server.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.LogError(string.Format("更新包 system{0}/{1} 还原失败", id, pkgName), ex);
+                LogHelper.LogError($"更新包 system{id}/{pkgName} 还原失败", ex);
 
                 return Error(ex.Message);
             }
@@ -179,13 +176,13 @@ namespace Justin.Updater.Server.Controllers
 
                 SysUpdateHelper.DeletePkg(id, pkgId);
 
-                LogHelper.LogInfo(string.Format("更新包 system{0}/{1} 删除成功", id, pkgName));
+                LogHelper.LogInfo($"更新包 system{id}/{pkgName} 删除成功");
 
                 return Success();
             }
             catch (Exception ex)
             {
-                LogHelper.LogError(string.Format("更新包 system{0}/{1} 删除失败", id, pkgName), ex);
+                LogHelper.LogError($"更新包 system{id}/{pkgName} 删除失败", ex);
 
                 return Error(ex.Message);
             }
@@ -211,13 +208,13 @@ namespace Justin.Updater.Server.Controllers
 
                 SysUpdateHelper.GenerateSystemJsonFile(id);
 
-                LogHelper.LogInfo(string.Format("更新系统运行信息 system{0} 成功", id));
+                LogHelper.LogInfo($"更新系统运行信息 system{id} 成功");
 
                 return Success();
             }
             catch (Exception ex)
             {
-                LogHelper.LogError(string.Format("更新系统运行信息 system{0} 失败", id), ex);
+                LogHelper.LogError($"更新系统运行信息 system{id} 失败", ex);
 
                 return Error(ex.Message);
             }
@@ -293,7 +290,7 @@ namespace Justin.Updater.Server.Controllers
             var runFile = SysUpdateHelper.GetSystemRunFile(id, path);
 
             if (!System.IO.File.Exists(runFile))
-                return HttpNotFound();
+                return NotFound();
 
             return File(runFile, "application/octet-stream");
         }

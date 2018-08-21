@@ -28,7 +28,7 @@ namespace Justin.Updater.Client
 
         public static void Update(string msg = null, int delay = 0)
         {
-            ThreadPool.QueueUserWorkItem((_) => {
+            ThreadPool.QueueUserWorkItem(_ => {
                 if(delay > 0)
                 {
                     Thread.Sleep(delay);
@@ -186,14 +186,13 @@ namespace Justin.Updater.Client
 
                 foreach (var rf in remoteRunFiles)
                 {
-                    string localTag = null;
 
-                    // 本地不存在或者MD5不同
-                    var needUpdate = !localRunFiles.TryGetValue(rf.Key, out localTag) ||
-                            !rf.Value.Equals(localTag) || 
-                            !File.Exists(Path.Combine(runDir, rf.Key));
+                // 本地不存在或者MD5不同
+                var needUpdate = !localRunFiles.TryGetValue(rf.Key, out string localTag) ||
+                        !rf.Value.Equals(localTag) ||
+                        !File.Exists(Path.Combine(runDir, rf.Key));
 
-                    if (needUpdate)
+                if (needUpdate)
                     { // update
                         yield return new UpdateRunFile
                         {
@@ -404,27 +403,17 @@ namespace Justin.Updater.Client
         
         private static string GetRemoteInfoUrl(string host, string systemId)
         {
-            return string.Format("{0}/api/RunInfo/{1}", host, systemId);
+            return $"{host}/api/RunInfo/{systemId}";
         }
         private static string GetRunFileUrl(string host, string systemId, string path)
         {
-            return string.Format("{0}/api/RunFile/{1}?path={2}",
-                host, systemId, path);
+            return $"{host}/api/RunFile/{systemId}?path={path}";
         }
 
         public static bool IsThisAppRunning()
         {
             var thisApp = Process.GetCurrentProcess();
             var thisFileName = thisApp.MainModule.FileName;
-            //var thisAppName = thisApp.ProcessName;
-            //var processes = Process.GetProcessesByName(thisAppName);
-
-            //return processes.Length > 1 && (from p in processes
-            //                                where p.Id != thisApp.Id && 
-            //                                        thisFileName.Equals(p.MainModule.FileName, 
-            //                                                StringComparison.OrdinalIgnoreCase)
-            //                                select p)
-            //        .FirstOrDefault() != null;
 
             return GetProcessesByAppPath(thisFileName, thisApp.ProcessName)
                 .Any(p => p.Id != thisApp.Id);
@@ -464,7 +453,7 @@ namespace Justin.Updater.Client
         
         public static Config GetSystemConfig(string host, string systemId)
         {
-            string url = string.Format("{0}/api/GetSystemConfig/{1}", host, systemId);
+            string url = $"{host}/api/GetSystemConfig/{systemId}";
             var req = Util.CreateHttpRequest(url);
 
             using (var reader = new StreamReader(req.GetResponse().GetResponseStream()))
@@ -538,7 +527,7 @@ namespace Justin.Updater.Client
     {
         public bool Equals(string x, string y)
         {
-            if (Object.ReferenceEquals(x, y))
+            if (ReferenceEquals(x, y))
                 return true;
 
             if (x == null || y == null)

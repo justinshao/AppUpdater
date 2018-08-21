@@ -8,5 +8,11 @@ namespace Justin.Updater.Server.Controllers
     public abstract class BaseController : Controller
     {
         public LoginEmpInfo Oper { get { return SessionInfo.Emp; } }
+
+        [ActionName("404")]
+        public ActionResult NotFound()
+        {
+            return View("404");
+        }
     }
 }

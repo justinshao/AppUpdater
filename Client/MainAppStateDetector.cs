@@ -6,10 +6,10 @@ namespace Justin.Updater.Client
 {
     class MainAppStateDetector : BackgroundTask
     {
-        private LocalRunInfo localRunInfo;
-        private string mainAppPath;
+        private readonly LocalRunInfo localRunInfo;
+        private readonly string mainAppPath;
         private UpdateUrlInfo updateUrlInfo;
-        private string clientId;
+        private readonly string clientId;
         private Config config;
 
         public MainAppStateDetector(string mainAppPath, LocalRunInfo localRunInfo, Config config)
