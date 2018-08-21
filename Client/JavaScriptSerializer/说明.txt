@@ -1,0 +1,8 @@
+﻿.Net 自带的Json序列化类 JavaScriptConverter 对反序列化的成员数量有限制
+代码在 JavaScriptObjectDeserializer 的 ThrowIfMaxJsonDeserializerMembersExceeded 方法
+但是修改这个限制需要配置文件，所以就把相关的源码进行了修改
+
+这里的 JavaScriptSerializer 来自 System.Web.Extensions.dll 
+对应 System.Web.Script.Serialization 下的类， 去除了上面的成员数量限制
+
+注意：修改的代码仍然需要引用 System.Web.Extensions.dll

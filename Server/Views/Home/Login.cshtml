@@ -1,0 +1,45 @@
+﻿@using Justin.Updater.Server.Models.Home
+@model LoginViewModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>更新系统</title>
+    <meta name="generator" content="KingT" />
+    <link href="~/Content/Styles/login.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="main">
+        <div class="header">
+            <img style="width: 60px; height: 60px; vertical-align:text-bottom" src="~/Content/images/jutsin.png" />
+            <label style="font-size: 50px">更新系统</label>
+        </div>
+        <div class="content">
+            <div class="title">
+                管理员登录
+            </div>
+            <form name="login" method="post">
+                <fieldset>
+                    <div class="input">
+                        <input value="@Model.Code" class="input_all name" name="Code" id="name" placeholder="用户名" type="text" onFocus="this.className='input_all name_now';" onBlur="this.className='input_all name'" maxLength="24" />
+                    </div>
+                    <div class="input">
+                        <input value="@Model.Password" class="input_all password" name="Password" id="password" type="password" placeholder="密码" onFocus="this.className='input_all password_now';" onBlur="this.className='input_all password'" maxLength="24" />
+                    </div>
+                    <div class="enter">
+                        <input class="button hide" name="submit" type="submit" value="登录" />
+                    </div>
+                </fieldset>
+            </form>
+            <div class="err">
+                @Model.Error
+            </div>
+        </div>
+    </div>
+</body>
+</html>

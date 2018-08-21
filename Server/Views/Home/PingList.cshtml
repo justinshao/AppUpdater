@@ -1,0 +1,103 @@
+﻿@using Justin.Updater.Server.Models.Home
+@model SystemPingListViewModel
+
+@{
+    ViewBag.Title = "客户端运行状态";
+}
+
+<div class="container demo-wrapper">
+    <div class="page-header">
+        <h2 style="display: inline-block">@Model.System.Name</h2>
+        <span id="clearData" data-system-id="@Model.System.Id" class="glyphicon glyphicon-refresh" title="刷新数据"></span>
+        <form class="form-inline">
+            <div class="form-group">
+                <label class="sr-only" for="exampleInputEmail3">Email address</label>
+                <input type="text" value="@Model.ClientName" class="form-control" id="clientName" name="clientName" placeholder="客户名称">
+            </div>
+        </form>
+    </div>
+    <table id="logFiles" class="table table-hover table-bordered table-condensed">
+        <tr><th>序号</th><th>客户名称</th><th>最后活跃时间</th><th>不活跃时长</th></tr>
+        @{
+            var idx = 1;
+            var now = DateTime.Now;
+        }
+        @foreach (var a in Model.ClientApps.OrderByDescending(c => now - c.LastActive))
+        {
+
+            var span = now - a.LastActive;
+            var isActive = span.TotalSeconds < Model.Config.PingInterval * 1.5;
+
+            <tr>
+                <td style="text-align:center">@idx</td>
+                <td>
+                    @a.ClientId
+                </td>
+                <td>@a.LastActive.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                <td>
+                    <span style="color: @(!isActive ? "red" : "forestgreen"); font-weight: bold">
+                        @(span.Days == 0 ? (span.Hours == 0 ? (span.Minutes == 0 ? (span.Seconds + "秒") : span.Minutes + "分" + span.Seconds + "秒") : span.Hours + "小时" + span.Minutes + "分") : span.Days + "天")
+                    </span>
+                    @if (!isActive)
+                    {
+                        <button id="startApp" data-system-id="@Model.System.Id" data-client-id="@a.ClientId"
+                                data-type="Start" class="btn btn-default" type="submit" style="float: right">
+                            启动
+                        </button>
+                    }
+                </td>
+            </tr>
+
+            idx++;
+        }
+    </table>
+</div>
+
+<script>
+    $(function () {
+        $('#startApp').click(function () {
+            var systemId = $(this).data('systemId'),
+                clientId = $(this).data('clientId'),
+                type = $(this).data('type');
+
+            $.ajax({
+                type: 'POST',
+                url: '/api/SendCommand',
+                data: {
+                    id: systemId,
+                    clientId: clientId,
+                    type: type
+                },
+                success: function (data) {
+                    if (!data.Ok) {
+                        alert(data.Message);
+                    } else {
+                        window.location.reload();
+                    }
+                },
+                dataType: 'json'
+            });
+        });
+
+        $('#clearData').click(function () {
+            var systemId = $(this).data('systemId');
+
+            $.ajax({
+                type: 'POST',
+                url: '/api/ClearPing/' + systemId,
+                success: function (data) {
+                    if (!data.Ok) {
+                        alert(data.Message);
+                    } else {
+                        window.location.reload();
+                    }
+                },
+                dataType: 'json'
+            });
+        });
+
+        window.setTimeout(function () {
+            window.location.reload();
+        }, @(Model.Config.PingInterval * 1000 / 2));
+    });
+</script>

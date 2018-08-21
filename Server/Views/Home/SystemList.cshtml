@@ -1,0 +1,45 @@
+﻿@using Justin.Updater.Server.Models.Home
+@model SystemListViewModel
+
+@{ 
+    ViewBag.Title = "系统列表";
+}
+
+<style>
+    .thumbnail h3 { text-align: center; }
+    .thumbnail:hover { text-decoration: none; }
+    .thumbnail p { text-align: right; }
+    .thumbnail img { border-radius: 10px; margin-top: 10px; }
+    .logo{width: 60px; height: 60px;}
+</style>
+<div class="row" style="padding: 20px">
+    @foreach (var s in Model.Systems.OrderBy(s => s.Id))
+    {
+        <div class="col-xs-6 col-sm-4 col-md-3">
+            <div class="thumbnail">
+                <a href="@Url.RouteUrl("Home", new { action = "System", id = s.Id })">
+                    <img class="logo" src="~/Content/images/jutsin.png" />
+                </a>
+                <div class="caption">
+                    <h3>@s.Name</h3>
+                    <p></p>
+                    <p>
+                        <a href="@Url.RouteUrl("Home", new { action = "Edit", id = s.Id })" class="btn btn-default glyphicon glyphicon-pencil" role="button"></a>
+                        <a href="@Url.RouteUrl("Home", new { action = "DeleteConfirm", id = s.Id })" class="btn btn-default glyphicon glyphicon-trash" role="button"></a>
+                        <a href="@Url.RouteUrl("Home", new { action = "Config", id = s.Id })" class="btn btn-default glyphicon glyphicon-cog" role="button"></a>
+                        <a href="@Url.RouteUrl("Home", new { action = "Log", id = s.Id })" class="btn btn-default glyphicon glyphicon-book" role="button"></a>
+                        <a href="@Url.RouteUrl("Home", new { action = "PingList", id = s.Id })" class="btn btn-default glyphicon glyphicon-signal" role="button"></a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    }
+    <div class="col-xs-6 col-sm-4 col-md-3">
+        <a href="@Url.RouteUrl("Home", new { action = "New" })" class="thumbnail">
+            <img class="logo" src="~/Content/images/jutsin.png" />
+            <div class="caption" style="text-align: center;">
+                <h3 class="glyphicon glyphicon-plus" style="font-size: 68px;"></h3>
+            </div>
+        </a>
+    </div>
+</div>

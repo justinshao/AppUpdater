@@ -1,0 +1,29 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@ViewBag.Title</title>
+    <link href="~/Content/Styles/bootstrap.min.css" rel="stylesheet" />
+    @RenderSection("styles", false)
+    <script src="~/Content/Scripts/jquery-1.9.1.min.js"></script>
+    @RenderSection("scripts", false)
+
+    <style>
+        header{ background-color: #0060AA; height: 60px; }
+        header img{ margin: 10px 20px; }
+        header span{ font-size: 30px; color: #B5B5B5; margin-left: 10px; vertical-align: middle; }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="@Url.RouteUrl("Home", new { action = "SystemList" })">
+            <img style="width: 40px; height: 40px" src="~/Content/images/logo_ico.png" />
+        </a>
+        <span>@ViewBag.Title</span>
+    </header>
+    @RenderBody()
+
+    @RenderSection("inner_scripts", false)
+</body>
+</html>

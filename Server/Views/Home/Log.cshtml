@@ -1,0 +1,59 @@
+﻿@using Justin.Updater.Server.Models.Home
+@model SystemLogViewModel
+
+@{
+    ViewBag.Title = "系统日志";
+}
+
+<div class="container demo-wrapper">
+    <div class="page-header">
+        <h2 style="display: inline-block">@Model.System.Name</h2>
+        <a href="@Url.RouteUrl("Home", new { action = "DeleteAllLog", id = Model.System.Id, date = Model.Date.ToString("yyyy-MM-dd") })"
+           class="glyphicon glyphicon-trash"></a>
+    </div>
+
+    <nav style="text-align: right">
+        <ul class="pagination">
+            <li class="@(Model.CurrPage == 1 ? "disabled" : "")">
+                <a href="@(Url.RouteUrl("Home", new { Action = "Log", id = Model.System.Id, p = Math.Max(0, Model.CurrPage - 1) }))" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>
+            </li>
+            @for (int p = 1; p <= Model.TotalPage; p++)
+            {
+                <li class="@(p == Model.CurrPage ? "active" : "")">
+                    <a href="@Url.RouteUrl("Home", new { Action = "Log", id = Model.System.Id, p = p })">@p</a>
+                </li>
+            }
+            <li class="@(Model.CurrPage == Model.TotalPage ? "disabled" : "")">
+                <a href="@(Url.RouteUrl("Home", new { Action = "Log", id = Model.System.Id, p = Math.Min(Model.TotalPage, Model.CurrPage + 1) }))" aria-label="Next"><span aria-hidden="true">»</span></a>
+            </li>
+        </ul>
+    </nav>
+    <table id="logFiles" class="table table-hover table-bordered table-condensed">
+        <tr><th>序号</th><th>文件名</th><th>创建时间</th><th>修改时间</th><th>操作</th></tr>
+        @{ var idx = 1; }
+        @foreach (var f in Model.LogFiles)
+        {
+        <tr>
+            <td style="text-align:center">@idx</td>
+            <td>
+                @f.Name
+                <span>
+                    @("(" + (f.Size > (1024 * 1024) ? (f.Size / 1024 / 1024) + "Mb" : f.Size > 1024 ? f.Size / 1024 + "kb" : f.Size + "byte").ToString() + ")")
+                </span>
+            </td>
+            <td>@f.CreationTime.ToString("yyyy-MM-dd HH:mm:ss")</td>
+            <td>@f.LastWriteTime.ToString("yyyy-MM-dd HH:mm:ss")</td>
+            <td style="text-align:center">
+                <a href="@Url.RouteUrl("Home", new { action = "LogContent", id = Model.System.Id, fileName = f.Name, date = Model.Date.ToString("yyyy-MM-dd") })"
+                   class="btn btn-default glyphicon glyphicon-eye-open" role="button"></a>
+                <a href="@Url.RouteUrl("Home", new { action = "DownloadLog", id = Model.System.Id, fileName = f.Name, date = Model.Date.ToString("yyyy-MM-dd") })"
+                   class="btn btn-default glyphicon glyphicon-download-alt" role="button"></a>
+                <a href="@Url.RouteUrl("Home", new { action = "DeleteLog", id = Model.System.Id, fileName = f.Name, date = Model.Date.ToString("yyyy-MM-dd") })"
+                   class="btn btn-default glyphicon glyphicon-trash" role="button"></a>
+            </td>
+        </tr>
+
+            idx++;
+        }
+    </table>
+</div>

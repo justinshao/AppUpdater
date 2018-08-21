@@ -1,0 +1,12 @@
+﻿@using Justin.Updater.Server.Models.Home
+@model ConfirmViewModel
+
+<form action="@Model.OkUrl" method="post" style="margin-top: 100px">
+    <div style="text-align: center;">
+        <h2>@Model.Message</h2>
+        <p style="margin-top: 30px">
+            <button type="submit" class="btn btn-primary btn-lg" style="margin-right: 20px;">确&nbsp;&nbsp;&nbsp;定</button>
+            <a href="@Model.CancelUrl" class="btn btn-default btn-lg" style="margin-left: 20px;">取&nbsp;&nbsp;&nbsp;消</a>
+        </p>
+    </div>
+</form>

@@ -1,0 +1,112 @@
+﻿@using Justin.Updater.Server.Models.Home
+@model SystemViewModel
+
+@{
+    ViewBag.Title = "更新包管理";
+}
+
+@section styles{
+    <link href="/Content/Styles/upload.css" rel="stylesheet" />
+}
+@section scripts{
+    <script src="/Content/Scripts/dmuploader.js"></script>
+    <script src="/Content/Scripts/update.js"></script>
+}
+
+<style>
+    table td{
+        vertical-align: middle!important;
+    }
+    .page-header h2{ display: inline-block; }
+    .page-header span{ cursor: pointer; font-size: 20px; margin-left: 10px; }
+</style>
+
+<div class="container demo-wrapper">
+    <div class="page-header">
+        <h2>@Model.System.Name</h2>
+        <span id="updRunInfo" style="visibility: hidden" class="glyphicon glyphicon-refresh" title="更新运行信息（慎点）"></span>
+    </div>
+
+    <div class="row demo-columns">
+        <div class="col-md-6">
+            <div id="drag-and-drop-zone" class="uploader">
+                <div class="info">将zip压缩包拖拽至此</div>
+                <div class="or">-或者-</div>
+                <div class="browser">
+                    <label>
+                        <span>浏览文件</span>
+                        <input type="file" name="file" accept=".zip" title='点击浏览文件' />
+                    </label>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">输出</h3>
+                </div>
+                <div class="panel-body demo-panel-debug">
+                    <ul id="demo-debug"></ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">上传列表</h3>
+                </div>
+                <div class="panel-body demo-panel-files" id='demo-files'>
+                    <span class="demo-note">还没有选择任何上传文件...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <nav style="text-align: right">
+        <ul class="pagination">
+            <li class="@(Model.CurrPage == 1 ? "disabled" : "")">
+                <a href="@(Url.RouteUrl("Home", new { Action = "System", id = Model.System.Id, p = Math.Max(0, Model.CurrPage - 1) }))" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>
+            </li>
+            @for (int p = 1; p <= Model.TotalPage; p++)
+            {
+                <li class="@(p == Model.CurrPage ? "active" : "")">
+                    <a href="@Url.RouteUrl("Home", new { Action = "System", id = Model.System.Id, p = p })">@p</a>
+                </li>
+            }
+            <li class="@(Model.CurrPage == Model.TotalPage ? "disabled" : "")">
+                <a href="@(Url.RouteUrl("Home", new { Action = "System", id = Model.System.Id, p = Math.Min(Model.TotalPage, Model.CurrPage + 1) }))" aria-label="Next"><span aria-hidden="true">»</span></a>
+            </li>
+        </ul>
+    </nav>
+    <table id="packages" class="table table-hover table-bordered table-condensed">
+        <tr><th>ID</th><th>更新包</th><th>状态</th><th>上传/安装时间</th><th>操作</th></tr>
+        @foreach (var p in Model.Packages.OrderByDescending(p => p.UploadOrInstallTime))
+        {
+            <tr>
+                <td>@p.Id.ToString()</td>
+                <td>@p.Name 
+                    <span>
+                        @("(" + (p.Size > (1024 * 1024) ? (p.Size / 1024 / 1024) + "Mb" : p.Size > 1024 ? p.Size / 1024 + "kb" : p.Size + "byte").ToString() + ")")
+                    </span>
+                </td>
+                <td>
+                    @(p.Installed ? "已安装" : "未安装")
+                </td>
+                <td>@p.UploadOrInstallTime.ToString("yyyy-MM-dd HH:mm")</td>
+                <td>
+                    @if (p.Installed)
+                    {
+                        <button data-pkg-id="@p.Id" class="btn btn-default btn-restore" type="submit">还&nbsp;原</button>
+                    }
+                    else
+                    {
+                        <button data-pkg-id="@p.Id" class="btn btn-primary btn-update" type="submit">安&nbsp;装</button>
+                        <button data-pkg-id="@p.Id" class="btn btn-danger btn-delete" type="submit">删&nbsp;除</button>
+                    }
+                </td>
+            </tr>
+        }
+    </table>
+</div>
+
+<script>
+    Init(@Model.System.Id);
+</script>

@@ -1,0 +1,15 @@
+﻿Justin.Updater.Server 项目引用的 ICSharpCode.SharpZipLib.dll 是本地重新编译过的版本，针对本地需求加了如下功能：
+
+1.由于原始的版本在解压回调 CompletedFile 的时候，文件还在占用，导致生成MD5时出错
+
+重新编译的版本修改的对应代码是 ICSharpCode.SharpZipLib.Zip.FastZip 的 
+ExtractFileEntry(ZipEntry entry, string targetName) 方法，
+将原本在using内调用的 CompletedFile 移到using外
+
+2.原始版本没有在解压一个文件前进行确认的回调，以便决定是否跳过当前文件
+
+重新编译的版本对 ICSharpCode.SharpZipLib.Zip.FastZipEvents 做了扩展，加了相应的 ConfirmFile 回调，
+同时对 ICSharpCode.SharpZipLib.Zip.FastZip 的 ExtractFileEntry(ZipEntry entry, string targetName) 方法
+做了相应的修改
+
+3.对传入回调事件相关参数类 ICSharpCode.SharpZipLib.Core.ScanEventArgs 的路径名进行了格式化，把 '/' 替换成 '\'
