@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Justin.Updater.Server
 {
-    public static class CryptoHelper
+    internal static class CryptoHelper
     {
         private static RijndaelManaged CryptoService = new RijndaelManaged();
         private static MD5 md5 = new MD5CryptoServiceProvider();

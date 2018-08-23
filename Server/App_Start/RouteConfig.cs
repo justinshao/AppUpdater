@@ -3,7 +3,7 @@ using System.Web.Routing;
 
 namespace Justin.Updater.Server
 {
-    public class RouteConfig
+    internal class RouteConfig
     {
         public static void RegisterRoutes(RouteCollection routes)
         {

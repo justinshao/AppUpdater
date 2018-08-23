@@ -1,8 +1,0 @@
-﻿{
-  "DetectInterval": 5,
-  "PromptInterval": 60,
-  "PingInterval": 2,
-  "DetectEnabled": false,
-  "ForceUpdate": false,
-  "KeepUpdaterRunning": false
-}

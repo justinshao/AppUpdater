@@ -6,7 +6,7 @@ namespace Justin.Updater.Server
     /// <summary>
     /// 会话信息
     /// </summary>
-    static class SessionInfo
+    public static class SessionInfo
     {
         private const string _SessionKey_Emp = "emp";
 
