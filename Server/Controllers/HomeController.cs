@@ -1,5 +1,6 @@
 ﻿using Justin.Updater.Server.Models.Home;
 using Justin.Updater.Server.Util;
+using Justin.Updater.Shared;
 using System;
 using System.IO;
 using System.Linq;

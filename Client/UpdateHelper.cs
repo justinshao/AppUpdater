@@ -1,4 +1,5 @@
 ﻿using Justin.Serialization.Json;
+using Justin.Updater.Shared;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -515,82 +516,5 @@ namespace Justin.Updater.Client
 
         public string Host { get; set; }
         public string SystemId { get; set; }
-    }
-    
-    class DicIgnoreCase<T> : Dictionary<string, T>
-    {
-        public DicIgnoreCase() :
-            base(new StringComparer())
-        { }
-    }
-    class StringComparer : IEqualityComparer<string>
-    {
-        public bool Equals(string x, string y)
-        {
-            if (ReferenceEquals(x, y))
-                return true;
-
-            if (x == null || y == null)
-                return false;
-
-            if (x.Length != y.Length)
-                return false;
-
-            return x.Equals(y, StringComparison.OrdinalIgnoreCase);
-        }
-
-        public int GetHashCode(string obj)
-        {
-            return obj.ToUpper().GetHashCode();
-        }
-    }
-    class Config
-    {
-        /// <summary>
-        /// 更新检测频率（秒）
-        /// </summary>
-        public int DetectInterval { get; set; }
-
-        /// <summary>
-        /// 更新提示频率（分钟）
-        /// </summary>
-        public int PromptInterval { get; set; }
-
-        /// <summary>
-        /// 更新程序心跳频率（秒）
-        /// </summary>
-        public int PingInterval { get; set; }
-
-        /// <summary>
-        /// 启用更新检测
-        /// </summary>
-        public bool DetectEnabled { get; set; }
-
-        /// <summary>
-        /// 是否强制自动更新
-        /// </summary>
-        public bool ForceUpdate { get; set; }
-
-        /// <summary>
-        /// 是否保持更新程序程序长时间运行（即使主程序关闭）
-        /// </summary>
-        public bool KeepUpdaterRunning { get; set; }
-        
-        /// <summary>
-        /// 主程序长时间运行
-        /// </summary>
-        public bool KeepAppRunning { get; set; }
-    }
-
-    class ClientCommand
-    {
-        public ClientCommandType Type { get; set; }
-        public string Args { get; set; }
-    }
-
-    enum ClientCommandType
-    {
-        Start,
-        Stop,
     }
 }

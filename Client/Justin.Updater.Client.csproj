@@ -56,6 +56,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\shared\ClientCommand.cs">
+      <Link>ClientCommand.cs</Link>
+    </Compile>
+    <Compile Include="..\shared\Config.cs">
+      <Link>Config.cs</Link>
+    </Compile>
+    <Compile Include="..\shared\DicIgnoreCase.cs">
+      <Link>DicIgnoreCase.cs</Link>
+    </Compile>
+    <Compile Include="..\shared\IOHelper.cs">
+      <Link>IOHelper.cs</Link>
+    </Compile>
     <Compile Include="BackgroundTask.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="FrmInput.cs">
@@ -82,7 +94,6 @@
     <Compile Include="FrmUpdateNotify.designer.cs">
       <DependentUpon>FrmUpdateNotify.cs</DependentUpon>
     </Compile>
-    <Compile Include="IOHelper.cs" />
     <Compile Include="JavaScriptSerializer\JavaScriptConverter.cs" />
     <Compile Include="JavaScriptSerializer\JavaScriptObjectDeserializer.cs" />
     <Compile Include="JavaScriptSerializer\JavaScriptSerializer.cs" />

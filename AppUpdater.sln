@@ -10,6 +10,15 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C56DB36B-68A0-43AE-974E-394C80EBF89C}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		shared\Config.cs = shared\Config.cs
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "shared", "shared", "{6C0FFF76-9D6B-483B-964E-3D3C2076D537}"
+	ProjectSection(SolutionItems) = preProject
+		shared\ClientCommand.cs = shared\ClientCommand.cs
+		shared\Config.cs = shared\Config.cs
+		shared\DicIgnoreCase.cs = shared\DicIgnoreCase.cs
+		shared\IOHelper.cs = shared\IOHelper.cs
 	EndProjectSection
 EndProject
 Global

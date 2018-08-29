@@ -1,4 +1,5 @@
 ﻿using Justin.Updater.Server.Util;
+using Justin.Updater.Shared;
 using System;
 using System.IO;
 using System.Web;

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Justin.Updater.Shared;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;

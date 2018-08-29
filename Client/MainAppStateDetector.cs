@@ -1,4 +1,5 @@
 ﻿using Justin.Serialization.Json;
+using Justin.Updater.Shared;
 using System;
 using System.IO;
 

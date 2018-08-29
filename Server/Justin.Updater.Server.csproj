@@ -134,6 +134,18 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\shared\ClientCommand.cs">
+      <Link>ClientCommand.cs</Link>
+    </Compile>
+    <Compile Include="..\shared\Config.cs">
+      <Link>Config.cs</Link>
+    </Compile>
+    <Compile Include="..\shared\DicIgnoreCase.cs">
+      <Link>DicIgnoreCase.cs</Link>
+    </Compile>
+    <Compile Include="..\shared\IOHelper.cs">
+      <Link>Util\IOHelper.cs</Link>
+    </Compile>
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Base\BaseController.cs" />
     <Compile Include="Base\ViewPageBase.cs" />
@@ -160,7 +172,6 @@
     <Compile Include="Models\Home\LoginViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SessionInfo.cs" />
-    <Compile Include="Util\IOHelper.cs" />
     <Compile Include="Util\LogHelper.cs" />
     <Compile Include="Util\SystemUpdaterCollection.cs" />
     <Compile Include="Util\SysUpdateHelper.cs" />

@@ -1,6 +1,7 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
-namespace Justin.Updater.Server
+namespace Justin.Updater.Shared
 {
     static class IOHelper
     {
@@ -19,6 +20,7 @@ namespace Justin.Updater.Server
 
             return ret;
         }
+
         public static void MoveFile(string src, string dst)
         {
             var dstInfo = new FileInfo(dst);
@@ -27,9 +29,10 @@ namespace Justin.Updater.Server
                 dstInfo.Delete();
             else
                 EnsureCreateDir(dstInfo.DirectoryName);
-            
+
             File.Move(src, dstInfo.FullName);
         }
+
         public static void DeleteFile(string file)
         {
             if (File.Exists(file))
@@ -40,6 +43,7 @@ namespace Justin.Updater.Server
                 File.Delete(file);
             }
         }
+
         public static void DeleteDir(string dir)
         {
             if (Directory.Exists(dir))
@@ -47,6 +51,7 @@ namespace Justin.Updater.Server
                 Directory.Delete(dir, true);
             }
         }
+
         public static void CreateEmptyFile(string file)
         {
             var fileInfo = new FileInfo(file);
@@ -60,14 +65,51 @@ namespace Justin.Updater.Server
             }
             catch
             {
-                if(!existsDir)
+                if (!existsDir)
                 {
                     DeleteDir(fileInfo.DirectoryName);
                 }
 
                 throw;
             }
+        }
 
+        public static void WriteFilePossibllyInUse(string dst, Stream data, bool throwOnError = false)
+        {
+            var tmp = dst + ".$tmp";
+            using (var fs = File.Create(tmp))
+            {
+                data.CopyTo(fs);
+            }
+
+            var old = dst + ".$old";
+            try
+            {
+                MoveFile(dst, old);
+                MoveFile(tmp, dst);
+            }
+            catch
+            {
+                if (throwOnError)
+                    throw;
+            }
+
+            try
+            {
+                DeleteFile(old);
+            }
+            catch { }
+        }
+
+        public static Stream Create(string file)
+        {
+            var info = new FileInfo(file);
+            if (!Directory.Exists(info.DirectoryName))
+            {
+                Directory.CreateDirectory(info.DirectoryName);
+            }
+
+            return info.Create();
         }
     }
 

@@ -1,4 +1,5 @@
 ﻿using Justin.Updater.Server.Util;
+using Justin.Updater.Shared;
 using System.Collections.Generic;
 
 namespace Justin.Updater.Server.Models.Home
