@@ -104,7 +104,6 @@
   <ItemGroup>
     <Content Include="Content\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Content\images\button.png" />
-    <Content Include="Content\images\jutsin.png" />
     <Content Include="Content\images\logo_ico.png" />
     <Content Include="Content\images\header_bg.png" />
     <Content Include="Content\images\input_bg.png" />

@@ -15,7 +15,7 @@
 <div href="" class="thumbnail" style="margin-top: 100px; text-align: center;">
     <div class="caption">
         <form action="@(Url.RouteUrl("Home", new { action = Model.Mode == 1 ? "New" : "Edit" }))" method="post">
-            <img class="logo" src="~/Content/images/jutsin.png" />
+            <img class="logo" src="~/Content/images/logo_ico.png" />
             <div class="form-group">
                 <input type="hidden" name="id" value="@Model.SystemId" />
                 <input type="text" name="name" value="@Model.Name" class="form-control" placeholder="输入系统名称">
