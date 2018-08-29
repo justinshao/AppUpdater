@@ -113,6 +113,7 @@
     <Content Include="Content\images\input_password_hover.png" />
     <Content Include="Content\images\login_bg.png" />
     <Content Include="Content\Scripts\bootstrap.min.js" />
+    <Content Include="Content\Scripts\clipboard.min.js" />
     <Content Include="Content\Scripts\dmuploader.js" />
     <Content Include="Content\fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Content\fonts\glyphicons-halflings-regular.ttf" />

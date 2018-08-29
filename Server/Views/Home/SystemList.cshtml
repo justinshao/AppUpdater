@@ -1,16 +1,46 @@
 ﻿@using Justin.Updater.Server.Models.Home
 @model SystemListViewModel
 
-@{ 
+@{
     ViewBag.Title = "系统列表";
 }
 
+@section scripts{
+    <script src="~/Content/Scripts/clipboard.min.js"></script>
+}
+
 <style>
-    .thumbnail h3 { text-align: center; }
-    .thumbnail:hover { text-decoration: none; }
-    .thumbnail p { text-align: right; }
-    .thumbnail img { border-radius: 10px; margin-top: 10px; }
-    .logo{width: 60px; height: 60px;}
+    .thumbnail h3 {
+        text-align: center;
+    }
+
+    .thumbnail:hover {
+        text-decoration: none;
+    }
+
+    .thumbnail p {
+        text-align: right;
+    }
+
+    .thumbnail img {
+        border-radius: 10px;
+        margin-top: 10px;
+    }
+
+    .thumbnail .caption {
+        text-align: center;
+    }
+
+    .logo {
+        width: 60px;
+        height: 60px;
+    }
+
+    .copy-link {
+        cursor: pointer;
+        font-size: 18px;
+        padding-left: 10px;
+    }
 </style>
 <div class="row" style="padding: 20px">
     @foreach (var s in Model.Systems.OrderBy(s => s.Id))
@@ -21,7 +51,8 @@
                     <img class="logo" src="~/Content/images/logo_ico.png" />
                 </a>
                 <div class="caption">
-                    <h3>@s.Name</h3>
+                    <h3 style="display: inline-block">@s.Name</h3>
+                    <span title="复制下载地址" data-id="@s.Id" class="copy-link glyphicon glyphicon-copy"></span>
                     <p></p>
                     <p>
                         <a href="@Url.RouteUrl("Home", new { action = "Edit", id = s.Id })" class="btn btn-default glyphicon glyphicon-pencil" role="button"></a>
@@ -43,3 +74,13 @@
         </a>
     </div>
 </div>
+
+<script>
+    new ClipboardJS('.copy-link', {
+        text: function (trigger) {
+            var id = $(trigger).data('id');
+
+            return location.protocol + '//' + location.host + '/' + id;
+        }
+    });
+</script>
