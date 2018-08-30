@@ -107,7 +107,7 @@ namespace Justin.Updater.Client
 
             try
             {
-                using (var resp = Util.CreateHttpRequest(url).GetResponse())
+                using (Util.CreateHttpRequest(url).GetResponse())
                 {
                 }
             }
@@ -126,7 +126,7 @@ namespace Justin.Updater.Client
 
             try
             {
-                using (var resp = Util.CreateHttpRequest(url).GetResponse())
+                using (Util.CreateHttpRequest(url).GetResponse())
                 {
                 }
             }

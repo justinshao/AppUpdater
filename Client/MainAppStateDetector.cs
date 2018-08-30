@@ -54,15 +54,9 @@ namespace Justin.Updater.Client
 
             try
             {
-                using (var resp = Util.CreateHttpRequest(url).GetResponse())
-                {
-                    using (StreamReader reader = new StreamReader(resp.GetResponseStream()))
-                    {
-                        var cmd = reader.ReadToEnd() ?? string.Empty;
+                var cmd = Util.GetHttpResponseString(url) ?? string.Empty;
 
-                        return new JavaScriptSerializer().Deserialize<ClientCommand>(cmd);
-                    }
-                }
+                return new JavaScriptSerializer().Deserialize<ClientCommand>(cmd);
             }
             catch
             {

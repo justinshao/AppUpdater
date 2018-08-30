@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Management;
 using System.Net;
 
@@ -14,6 +15,17 @@ namespace Justin.Updater.Client
             req.KeepAlive = false;
 
             return req;
+        }
+
+        public static string GetHttpResponseString(string url)
+        {
+            using (var resp = CreateHttpRequest(url).GetResponse())
+            {
+                using (var reader = new StreamReader(resp.GetResponseStream()))
+                {
+                    return reader.ReadToEnd();
+                }
+            }
         }
 
         public static string GetClientId(string fallback = null)

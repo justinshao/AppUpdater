@@ -330,20 +330,21 @@ namespace Justin.Updater.Client
         }
         private static RemoteRunInfo GetRemoteRunInfo(string url)
         {
-            using (var reader = new StreamReader(Util.CreateHttpRequest(url).GetResponse().GetResponseStream()))
-            {
-                return new JavaScriptSerializer().Deserialize<RemoteRunInfo>(reader.ReadToEnd());
-            }
+            var info = Util.GetHttpResponseString(url);
+
+            return new JavaScriptSerializer().Deserialize<RemoteRunInfo>(info);
         }
 
         private static bool DownloadRunFile(string url, string localPath)
         {
             try
             {
-                using (Stream src = Util.CreateHttpRequest(url).GetResponse().GetResponseStream(),
-                        dst = IOHelper.Create(localPath))
+                using (var resp = Util.CreateHttpRequest(url).GetResponse())
                 {
-                    src.CopyTo(dst);
+                    using (Stream src = resp.GetResponseStream(), dst = IOHelper.Create(localPath))
+                    {
+                        src.CopyTo(dst);
+                    }
                 }
 
                 return true;
@@ -366,9 +367,12 @@ namespace Justin.Updater.Client
         {
             try
             {
-                using (Stream src = Util.CreateHttpRequest(url).GetResponse().GetResponseStream())
+                using (var resp = Util.CreateHttpRequest(url).GetResponse())
                 {
-                    IOHelper.WriteFilePossibllyInUse(localPath, src);
+                    using (var src = resp.GetResponseStream())
+                    {
+                        IOHelper.WriteFilePossibllyInUse(localPath, src);
+                    }
                 }
 
                 return true;
@@ -454,13 +458,10 @@ namespace Justin.Updater.Client
         
         public static Config GetSystemConfig(string host, string systemId)
         {
-            string url = $"{host}/api/GetSystemConfig/{systemId}";
-            var req = Util.CreateHttpRequest(url);
+            var url = $"{host}/api/GetSystemConfig/{systemId}";
+            var config = Util.GetHttpResponseString(url);
 
-            using (var reader = new StreamReader(req.GetResponse().GetResponseStream()))
-            {
-                return new JavaScriptSerializer().Deserialize<Config>(reader.ReadToEnd());
-            }
+            return new JavaScriptSerializer().Deserialize<Config>(config);
         }
     }
     
