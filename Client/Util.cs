@@ -7,6 +7,11 @@ namespace Justin.Updater.Client
 {
     class Util
     {
+        static Util()
+        {
+            ServicePointManager.DefaultConnectionLimit = int.MaxValue;
+        }
+
         public static HttpWebRequest CreateHttpRequest(string url)
         {
             //ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3;
