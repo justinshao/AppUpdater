@@ -105,15 +105,7 @@ namespace Justin.Updater.Client
 
             string url = $"{updateUrlInfo.Host}/api/LogInfo/{updateUrlInfo.SystemId}?clientId={Util.GetClientId(localRunInfo.ClientId)}&info={info}";
 
-            try
-            {
-                using (Util.CreateHttpRequest(url).GetResponse())
-                {
-                }
-            }
-            catch
-            {
-            }
+            Util.SendHttpRequest(url);
         }
 
         public static void LogErrorToServer(string msg, Exception ex, LocalRunInfo localRunInfo)
@@ -124,15 +116,7 @@ namespace Justin.Updater.Client
 
             string url = $"{updateUrlInfo.Host}/api/LogError/{updateUrlInfo.SystemId}?clientId={Util.GetClientId(localRunInfo.ClientId)}&error={error}";
 
-            try
-            {
-                using (Util.CreateHttpRequest(url).GetResponse())
-                {
-                }
-            }
-            catch
-            {
-            }
+            Util.SendHttpRequest(url);
         }
     }
 }

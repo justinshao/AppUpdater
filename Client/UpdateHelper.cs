@@ -337,9 +337,11 @@ namespace Justin.Updater.Client
 
         private static bool DownloadRunFile(string url, string localPath)
         {
+            var req = Util.CreateHttpRequest(url);
+
             try
             {
-                using (var resp = Util.CreateHttpRequest(url).GetResponse())
+                using (var resp = req.GetResponse())
                 {
                     using (Stream src = resp.GetResponseStream(), dst = IOHelper.Create(localPath))
                     {
@@ -362,12 +364,18 @@ namespace Justin.Updater.Client
 
                 return false;
             }
+            finally
+            {
+                req?.Abort();
+            }
         }
         private static bool DownloadRunFilePossibllyInUse(string url, string localPath)
         {
+            var req = Util.CreateHttpRequest(url);
+
             try
             {
-                using (var resp = Util.CreateHttpRequest(url).GetResponse())
+                using (var resp = req.GetResponse())
                 {
                     using (var src = resp.GetResponseStream())
                     {
@@ -385,6 +393,10 @@ namespace Justin.Updater.Client
                 }
 
                 return false;
+            }
+            finally
+            {
+                req?.Abort();
             }
         }
         private static bool DeleteRunFile(string localPath)

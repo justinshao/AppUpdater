@@ -21,13 +21,7 @@ namespace Justin.Updater.Client
         {
             string url = $"{updateUrlInfo.Host}/api/DetectVer/{updateUrlInfo.SystemId}";
 
-            using (var resp = Util.CreateHttpRequest(url).GetResponse())
-            {
-                using (StreamReader reader = new StreamReader(resp.GetResponseStream()))
-                {
-                    return reader.ReadToEnd() ?? string.Empty;
-                }
-            }
+            return Util.GetHttpResponseString(url) ?? string.Empty;
         }
 
         public void DelayPrompt(int delay)

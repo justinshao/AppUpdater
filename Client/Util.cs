@@ -9,8 +9,8 @@ namespace Justin.Updater.Client
     {
         public static HttpWebRequest CreateHttpRequest(string url)
         {
+            //ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3;
             var req = (HttpWebRequest)WebRequest.Create(url);
-
             req.Proxy = null;
             req.KeepAlive = false;
 
@@ -19,12 +19,40 @@ namespace Justin.Updater.Client
 
         public static string GetHttpResponseString(string url)
         {
-            using (var resp = CreateHttpRequest(url).GetResponse())
+            var req = CreateHttpRequest(url);
+
+            try
             {
-                using (var reader = new StreamReader(resp.GetResponseStream()))
+                using (var resp = req.GetResponse())
                 {
-                    return reader.ReadToEnd();
+                    using (var reader = new StreamReader(resp.GetResponseStream()))
+                    {
+                        return reader.ReadToEnd();
+                    }
                 }
+            }
+            finally
+            {
+                req?.Abort();
+            }
+        }
+
+        public static void SendHttpRequest(string url)
+        {
+            var req = CreateHttpRequest(url);
+
+            try
+            {
+                using (req.GetResponse())
+                {
+                }
+            }
+            catch
+            {
+            }
+            finally
+            {
+                req?.Abort();
             }
         }
 
