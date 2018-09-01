@@ -42,7 +42,7 @@ namespace Justin.Updater.Client
             }
         }
 
-        public static void SendHttpRequest(string url)
+        public static void SendHttpRequest(string url, bool throwIfError = false)
         {
             var req = CreateHttpRequest(url);
 
@@ -54,6 +54,10 @@ namespace Justin.Updater.Client
             }
             catch
             {
+                if(throwIfError)
+                {
+                    throw;
+                }
             }
             finally
             {

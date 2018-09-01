@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Justin.Updater.Client")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("justin shao")]
 [assembly: AssemblyProduct("Justin.Updater.Client")]
 [assembly: AssemblyCopyright("Copyright (C)  2016")]
 [assembly: AssemblyTrademark("")]

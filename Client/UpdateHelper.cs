@@ -104,17 +104,10 @@ namespace Justin.Updater.Client
                     {
                         var url = GetRunFileUrl(host, systemId, file.Path);
                         var localPath = Path.Combine(runDir, file.Path);
-                        var success = false;
+                        var updateSelf = file.Path.Equals(thisExeName, StringComparison.OrdinalIgnoreCase); // 自更新
 
                         OnProcessFile?.Invoke("正在安装文件：" + localPath);
-                        if(file.Path.Equals(thisExeName, StringComparison.OrdinalIgnoreCase))
-                        { // 自更新
-                            success = DownloadRunFilePossibllyInUse(url, localPath);
-                        }
-                        else
-                        {
-                            success = DownloadRunFile(url, localPath);
-                        }
+                        var success = DownloadRunFile(url, localPath, possibllyInUse: updateSelf);
 
                         if (!success)
                         {
@@ -335,7 +328,7 @@ namespace Justin.Updater.Client
             return new JavaScriptSerializer().Deserialize<RemoteRunInfo>(info);
         }
 
-        private static bool DownloadRunFile(string url, string localPath)
+        private static bool DownloadRunFile(string url, string localPath, bool possibllyInUse = false)
         {
             var req = Util.CreateHttpRequest(url);
 
@@ -343,9 +336,19 @@ namespace Justin.Updater.Client
             {
                 using (var resp = req.GetResponse())
                 {
-                    using (Stream src = resp.GetResponseStream(), dst = IOHelper.Create(localPath))
+                    if(possibllyInUse)
                     {
-                        src.CopyTo(dst);
+                        using (var src = resp.GetResponseStream())
+                        {
+                            IOHelper.WriteFilePossibllyInUse(localPath, src);
+                        }
+                    }
+                    else
+                    {
+                        using (Stream src = resp.GetResponseStream(), dst = IOHelper.Create(localPath))
+                        {
+                            src.CopyTo(dst);
+                        }
                     }
                 }
 
@@ -358,36 +361,6 @@ namespace Justin.Updater.Client
                 LogHelper.LogError(msg, ex);
 
                 if(!OnConfirmFileError(msg, ex))
-                {
-                    Environment.Exit(0);
-                }
-
-                return false;
-            }
-            finally
-            {
-                req?.Abort();
-            }
-        }
-        private static bool DownloadRunFilePossibllyInUse(string url, string localPath)
-        {
-            var req = Util.CreateHttpRequest(url);
-
-            try
-            {
-                using (var resp = req.GetResponse())
-                {
-                    using (var src = resp.GetResponseStream())
-                    {
-                        IOHelper.WriteFilePossibllyInUse(localPath, src);
-                    }
-                }
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                if(!OnConfirmFileError.Invoke(string.Format("更新 {0} 出错。", localPath), ex))
                 {
                     Environment.Exit(0);
                 }
@@ -446,7 +419,6 @@ namespace Justin.Updater.Client
         {
             return GetProcessesByAppPath(appPath).Any();
         }
-
         public static void KillRunningApps(string appPath)
         {
             foreach (var p in GetProcessesByAppPath(appPath))
@@ -454,7 +426,6 @@ namespace Justin.Updater.Client
                 p.Kill();
             }
         }
-
         private static IEnumerable<Process> GetProcessesByAppPath(string appPath, string requiredProcessName = null)
         {
             var exeFilePath = Path.GetFullPath(appPath); // 配置的启动程序路径

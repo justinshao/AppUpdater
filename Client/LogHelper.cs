@@ -7,7 +7,7 @@ namespace Justin.Updater.Client
 {
     static class LogHelper
     {
-        private static object _lock = new object();
+        private static readonly object _lock = new object();
 
         private static string GetLogFile()
         {

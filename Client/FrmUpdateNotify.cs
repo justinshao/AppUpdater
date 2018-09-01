@@ -18,13 +18,13 @@ namespace Justin.Updater.Client
         /// </summary>
         private static bool _exists = false;
 
-        public static void Show(Action onUpdateRequest, Action OnUpdateIgnore)
+        public static void Show(Action onUpdateRequest, Action onUpdateIgnore)
         {
             if(!_exists)
             {
                 FrmUpdateNotify _frmUpdateNotify = new FrmUpdateNotify();
                 _frmUpdateNotify.OnUpdateRequest += onUpdateRequest;
-                _frmUpdateNotify.OnUpdateIgnore += OnUpdateIgnore;
+                _frmUpdateNotify.OnUpdateIgnore += onUpdateIgnore;
                 _frmUpdateNotify.Show();
 
                 _exists = true;
