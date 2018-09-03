@@ -34,11 +34,11 @@ namespace Justin.Updater.Server
         /// <summary>
         /// 未安装的更新包名规则
         /// </summary>
-        private static Regex rUnInstalledPkgName = new Regex(@"^\$(\d+)\-(.+\.zip)$");
+        private static readonly Regex rUnInstalledPkgName = new Regex(@"^\$(\d+)\-(.+\.zip)$");
         /// <summary>
         /// 匹配已安装的更新包名
         /// </summary>
-        private static Regex rInstalledPkgName = new Regex(string.Format(@"^\$(\d+)\-(.*)\.(\d+){0}$", Regex.Escape(InstalledPkgExt)));
+        private static readonly Regex rInstalledPkgName = new Regex(string.Format(@"^\$(\d+)\-(.*)\.(\d+){0}$", Regex.Escape(InstalledPkgExt)));
 
         #region 更新系统增删改查
         public static IList<Models.System> GetSystems()
@@ -48,6 +48,7 @@ namespace Justin.Updater.Server
             if(File.Exists(systemsFile))
             {
                 var systems = JsonConvert.DeserializeObject<List<Models.System>>(File.ReadAllText(systemsFile, Encoding.UTF8));
+                
                 systems.ForEach(s => s.UpdateDetectEnabled = UpdateDetectEnabled(s.Id));
 
                 return systems;

@@ -20,7 +20,7 @@ namespace Justin.Updater.Server
             {
                 Id = 1,
                 Code = usr,
-                Name = "Sps管理员",
+                Name = "justin",
                 Password = pwd
             };
         }
