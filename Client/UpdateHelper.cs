@@ -334,6 +334,11 @@ namespace Justin.Updater.Client
 
             try
             {
+                if(localPath.EndsWith(Constants.UpdateErrorFile, StringComparison.OrdinalIgnoreCase))
+                {
+                    throw new Exception($"无效文件：{localPath}");
+                }
+
                 using (var resp = req.GetResponse())
                 {
                     if(possibllyInUse)

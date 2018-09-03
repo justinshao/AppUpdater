@@ -51,8 +51,8 @@ namespace Justin.Updater.Client
         private void FrmMain_FormClosing(object sender, FormClosingEventArgs e)
         {
             UnBindUpdateEvents();
-            
-            if(_config.DetectEnabled && _config.KeepUpdaterRunning)
+
+            if (_config.DetectEnabled && _config.KeepUpdaterRunning)
             {
                 UpdateHelper.KillRunningApps(_mainAppPath);
             }
@@ -92,9 +92,9 @@ namespace Justin.Updater.Client
             {
                 LogHelper.LogError("更新出错", ex);
                 _frmProgress.Hide();
-
+                
                 if (MessageBox.Show(string.Format("{0}\r\n是否继续运行？", ex.Message),
-                    "错误", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                  "错误", MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
                     if (string.IsNullOrEmpty(localRunInfo.AppRunCmd))
                     {
@@ -132,10 +132,10 @@ namespace Justin.Updater.Client
             this.Invoke((Action)(() => { this.lbStatus.Text = msg; }));
         }
         private void OnUpdateComplete(
-            LocalRunInfo localRunInfo, 
-            IEnumerable<UpdateRunFile> fileDiff, 
-            List<string> failedUpdateFiles, 
-            List<string> failedDeleteFiles, 
+            LocalRunInfo localRunInfo,
+            IEnumerable<UpdateRunFile> fileDiff,
+            List<string> failedUpdateFiles,
+            List<string> failedDeleteFiles,
             bool initStart, bool runBat, string msg)
         {
             this.Invoke((Action)(() =>
@@ -182,18 +182,20 @@ namespace Justin.Updater.Client
         {
             this.Invoke((Action)(() =>
             {
-                if(string.IsNullOrEmpty(localRunInfo.ClientId))
+                if (string.IsNullOrEmpty(localRunInfo.ClientId))
                 {
                     localRunInfo.ClientId = InputClientId();
                 }
 
                 UpdateHelper.SaveLocalRunInfo(localRunInfo);
-
-                // 以下是更新检测相关逻辑
+                
                 _mainAppPath = localRunInfo.AppRunCmd.Split(new char[] { ' ' },
                             StringSplitOptions.RemoveEmptyEntries)[0];
                 var urlInfo = UpdateUrlInfo.Parse(localRunInfo.UpdateUrl);
                 this._config = UpdateHelper.GetSystemConfig(urlInfo.Host, urlInfo.SystemId);
+
+                //var urlInfo = UpdateUrlInfo.Parse(localRunInfo.UpdateUrl);
+                //this._config = UpdateHelper.GetSystemConfig(urlInfo.Host, urlInfo.SystemId);
 
                 if (UpdateHelper.IsThisAppRunning() || !this._config.DetectEnabled)
                 {// 保证更新程序只有一个在后台运行
@@ -221,8 +223,15 @@ namespace Justin.Updater.Client
         }
         private bool OnConfirmFileError(string msg, Exception e)
         {
-            return MessageBox.Show(string.Format("{0} 错误信息：\r\n\t{1}\r\n是否继续？", msg, e.Message), "错误", MessageBoxButtons.YesNo)
-                == DialogResult.Yes;
+            if(_config != null && _config.ForceUpdate)
+            { // 强制更新的情况，默认继续
+                return true;
+            }
+            else
+            {
+                return MessageBox.Show(string.Format("{0} 错误信息：\r\n\t{1}\r\n是否继续？", msg, e.Message), "错误", MessageBoxButtons.YesNo)
+                    == DialogResult.Yes;
+            }
         }
         private void OnMainAppAlreadyRunning(LocalRunInfo localRunInfo)
         {
@@ -232,39 +241,9 @@ namespace Justin.Updater.Client
 
                 Exit(localRunInfo);
             }));
-        } 
+        }
         #endregion
-
-        //private void InputAndStartApp(LocalRunInfo localRunInfo)
-        //{
-        //    if(string.IsNullOrEmpty(localRunInfo.AppRunCmd))
-        //    {
-        //        var appRunCmd = localRunInfo.AppRunCmd;
-        //        if (InputStartApp(ref localRunInfo.AppRunCmd))
-        //        {
-
-        //        }
-        //        else
-        //        {
-        //            Exit(localRunInfo);
-        //        }
-        //    }
-        //}
-
-        //private bool InputStartApp(ref string appRunCmd)
-        //{
-        //    FrmInput frm = new FrmInput("输入启动程序：", appRunCmd);
-        //    if (frm.ShowDialog() == DialogResult.OK)
-        //    {
-        //        appRunCmd = frm.Value;
-        //        return true;
-        //    }
-        //    else
-        //    {
-        //        return false;
-        //    }
-        //}
-
+        
         private void InputStartApp(LocalRunInfo localRunInfo)
         {
             FrmInput frm = new FrmInput("输入启动程序：", localRunInfo.AppRunCmd);
@@ -351,11 +330,11 @@ namespace Justin.Updater.Client
         {
             this.Invoke((Action)(() =>
             {
-                if(!this._config.KeepUpdaterRunning)
+                if (!this._config.KeepUpdaterRunning)
                 {
                     Exit(null);
                 }
-                else if(this._config.KeepAppRunning)
+                else if (this._config.KeepAppRunning)
                 {
                     if (!UpdateHelper.IsAppRunning(_mainAppPath))
                     {
@@ -374,7 +353,7 @@ namespace Justin.Updater.Client
             switch (cmd.Type)
             {
                 case ClientCommandType.Start:
-                    if(!UpdateHelper.IsAppRunning(_mainAppPath))
+                    if (!UpdateHelper.IsAppRunning(_mainAppPath))
                     {
                         UpdateHelper.RunMainApp(localRunInfo, "由服务端启动");
                     }
@@ -457,7 +436,7 @@ namespace Justin.Updater.Client
             //FrmUpdateNotify _frmUpdateNotify = new FrmUpdateNotify();
             //_frmUpdateNotify.UpdateRequest += OnUpdateRequest;
             //_frmUpdateNotify.Show();
-            if(!_config.ForceUpdate)
+            if (!_config.ForceUpdate)
             {
                 FrmUpdateNotify.Show(OnUpdateRequest, OnUpdateIgnore);
             }
@@ -471,7 +450,7 @@ namespace Justin.Updater.Client
         /// </summary>
         private void ShowAsNormal(string msg)
         {
-            if(!string.IsNullOrEmpty(msg))
+            if (!string.IsNullOrEmpty(msg))
             {
                 lbStatus.Text = msg;
             }
@@ -507,7 +486,7 @@ namespace Justin.Updater.Client
         /// <param name="config"></param>
         private void StartUpdateDetect(LocalRunInfo localRunInfo, Config config)
         {
-            if(_updateDetector!= null)
+            if (_updateDetector != null)
             {
                 _updateDetector.Stop();
                 _updateDetector.OnStart -= OnUpdateDetectorStart;
@@ -558,7 +537,7 @@ namespace Justin.Updater.Client
             //mnuItms[2].Text = "退出";
             //mnuItms[2].Click += (obj, e) => Exit(null);
             //mnuItms[2].DefaultItem = true;
-            
+
             //notifyIcon.ContextMenu = new ContextMenu(mnuItms);
         }
 
@@ -567,6 +546,6 @@ namespace Justin.Updater.Client
             ReleaseCapture();
             SendMessage(this.Handle, 0x0112, 0xF012, 0);
         }
-        
+
     }
 }

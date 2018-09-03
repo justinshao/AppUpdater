@@ -14,5 +14,9 @@
         /// 日志文件名
         /// </summary>
         public static readonly string UpdateLogFile = "$update.log";
+        /// <summary>
+        /// 测试用
+        /// </summary>
+        public static readonly string UpdateErrorFile = "$update.err";
     }
 }
