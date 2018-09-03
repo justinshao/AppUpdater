@@ -19,6 +19,9 @@ namespace Justin.Updater.Client
             req.Proxy = null;
             req.KeepAlive = false;
 
+            req.Headers.Add("ProcessPlatform", Environment.Is64BitProcess ? "x64" : "x86");
+            req.Headers.Add("OSPlatform", Environment.Is64BitOperatingSystem ? "x64" : "x86");
+
             return req;
         }
 
