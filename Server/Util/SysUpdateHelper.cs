@@ -30,6 +30,10 @@ namespace Justin.Updater.Server
         /// 锁定更新包的后缀名
         /// </summary>
         public static readonly string SystemLockFileExt = ".$lock";
+        /// <summary>
+        /// x64版本文件名称后缀
+        /// </summary>
+        public static readonly string FileX64Ext = ".$x64";
         
         /// <summary>
         /// 未安装的更新包名规则
@@ -496,10 +500,27 @@ namespace Justin.Updater.Server
         /// </summary>
         /// <param name="systemId"></param>
         /// <param name="file"></param>
+        /// <param name="x64">指定x64版本</param>
         /// <returns></returns>
-        public static string GetSystemRunFile(int systemId, string file)
+        public static string GetSystemRunFile(int systemId, string file, bool x64 = false)
         {
-            return Path.Combine(EnsureCreateSystemRunDir(systemId).Dir, file);
+            var file_def = Path.Combine(EnsureCreateSystemRunDir(systemId).Dir, file);
+
+            if(x64)
+            {
+                var file_x64 = file_def + FileX64Ext;
+
+                if (File.Exists(file_x64))
+                {
+                    return file_x64;
+                }
+
+                return file_def;
+            }
+            else
+            {
+                return file_def;
+            }
         }
 
         /// <summary>

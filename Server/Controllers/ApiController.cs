@@ -288,7 +288,11 @@ namespace Justin.Updater.Server.Controllers
         /// <returns></returns>
         public ActionResult RunFile(int id, string path)
         {
-            var runFile = SysUpdateHelper.GetSystemRunFile(id, path);
+            // 主程序如果是x64平台，运行环境及更新程序都是x64的，不用做特殊处理
+            // 主程序如果是x86平台，那么更新程序可以是x86和x64，此时就需要利用更新程序的目标平台下载对应的文件，默认x86，对应的x64版本文件名需要以.$x64结尾
+
+            var isX64 = ("x64" == Request.Headers["ProcessPlatform"]);
+            var runFile = SysUpdateHelper.GetSystemRunFile(id, path, isX64);
 
             if (!System.IO.File.Exists(runFile))
                 return NotFound();
