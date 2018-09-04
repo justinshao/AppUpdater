@@ -350,6 +350,11 @@ namespace Justin.Updater.Server
                 },
                 CompletedFile = (sender, e) =>
                 { // 一个文件解压完成后调用
+                    if(e.Name.EndsWith(FileX64Ext))
+                    { // x64版本的文件不记录文件列表，因为他和对应32位版本的等价
+                        return;
+                    }
+
                     var file = Path.Combine(runDir, e.Name);
                     installedRunFileResults.Add(new RunFile
                     {

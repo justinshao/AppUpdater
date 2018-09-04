@@ -290,6 +290,7 @@ namespace Justin.Updater.Server.Controllers
         {
             // 主程序如果是x64平台，运行环境及更新程序都是x64的，不用做特殊处理
             // 主程序如果是x86平台，那么更新程序可以是x86和x64，此时就需要利用更新程序的目标平台下载对应的文件，默认x86，对应的x64版本文件名需要以.$x64结尾
+            // 更新的时候，如果更新程序同时存在两个目标平台，那么需要上传1个文件的2个版本
 
             var isX64 = ("x64" == Request.Headers["ProcessPlatform"]);
             var runFile = SysUpdateHelper.GetSystemRunFile(id, path, isX64);
