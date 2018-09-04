@@ -31,9 +31,16 @@ namespace Justin.Updater.Server
             return logFile;
         }
 
-        public static string GetSystemClientLogDir(int systemId, DateTime date)
+        public static string GetSystemClientLogDir(int systemId, DateTime? date = null)
         {
-            return Path.Combine(GetLogDir(), $"Client{systemId}", date.ToString("yyyy-MM-dd"));
+            if(date == null)
+            {
+                return Path.Combine(GetLogDir(), $"Client{systemId}");
+            }
+            else
+            {
+                return Path.Combine(GetLogDir(), $"Client{systemId}", date.Value.ToString("yyyy-MM-dd"));
+            }
         }
 
         private static void LogErrorWithLock(string logFile, string msg, Exception ex)

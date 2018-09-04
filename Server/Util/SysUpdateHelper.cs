@@ -114,6 +114,12 @@ namespace Justin.Updater.Server
         }
         public static void DeleteSystem(int systemId)
         {
+            var configFile = GetSystemConfigFile(systemId);
+            IOHelper.DeleteFile(configFile);
+
+            var logDir = LogHelper.GetSystemClientLogDir(systemId);
+            IOHelper.DeleteDir(logDir);
+
             var runInfoFile = GetSystemRunInfoFile(systemId);
             IOHelper.DeleteFile(runInfoFile);
 
