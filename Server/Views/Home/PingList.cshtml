@@ -82,6 +82,10 @@
         $('#clearData').click(function () {
             var systemId = $(this).data('systemId');
 
+            clearAndReload(systemId);
+        });
+
+        function clearAndReload(systemId) {
             $.ajax({
                 type: 'POST',
                 url: '/api/ClearPing/' + systemId,
@@ -94,10 +98,10 @@
                 },
                 dataType: 'json'
             });
-        });
+        }
 
         window.setTimeout(function () {
             window.location.reload();
-        }, @(Model.Config.PingInterval * 1000 / 2));
+        }, Math.max(@(Model.Config.PingInterval * 1000 / 2), 2000));
     });
 </script>
