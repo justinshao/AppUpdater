@@ -132,6 +132,14 @@ namespace Justin.Updater.Server
             var backupDir = EnsureCreateSystemBackupDir(systemId).Dir;
             IOHelper.DeleteDir(backupDir);
 
+            var commandDir = EnsureCreateCommandDir(systemId).Dir;
+            IOHelper.DeleteDir(commandDir);
+
+            var lockFile = GetSystemLockFile(systemId);
+            IOHelper.DeleteFile(lockFile);
+
+            var detectFile = GetUpdateDetectTagFile(systemId);
+            IOHelper.DeleteFile(detectFile);
 
             var systems = GetSystems();
             var system = systems.First(s => s.Id == systemId);
@@ -562,7 +570,7 @@ namespace Justin.Updater.Server
         /// <returns></returns>
         public static string GetClientCommandFile(int systemId, string clientId)
         {
-            var dir = EnsureCreateCommandDir(systemId, clientId);
+            var dir = EnsureCreateCommandDir(systemId);
 
             return Path.Combine(dir.Dir, clientId);
         }
@@ -950,7 +958,7 @@ namespace Justin.Updater.Server
         /// <param name="systemId"></param>
         /// <param name="clientId"></param>
         /// <returns></returns>
-        private static DirCreateResult EnsureCreateCommandDir(int systemId, string clientId)
+        private static DirCreateResult EnsureCreateCommandDir(int systemId)
         {
             var dir = Path.Combine(AppSettingHelper.UpdateDir, "Command", $"System{systemId}");
 
