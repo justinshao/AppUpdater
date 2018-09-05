@@ -203,16 +203,16 @@ namespace Justin.Updater.Server.Controllers
 
         [HttpGet]
         [LoginRequired]
-        public ActionResult PingList(int id, string clientName, int p = 1, DateTime? date = null)
+        public ActionResult PingListWithClear(int id, string clientName, int p = 1, DateTime? date = null)
         {
             SystemUpdaterCollection.Clear(id);
 
-            return RedirectToAction(nameof(PingListWithoutClear), new { id, clientName, p, date });
+            return RedirectToAction(nameof(PingList), new { id, clientName, p, date });
         }
 
         [HttpGet]
         [LoginRequired]
-        public ActionResult PingListWithoutClear(int id, string clientName, int p = 1, DateTime? date = null)
+        public ActionResult PingList(int id, string clientName, int p = 1, DateTime? date = null)
         {
             var system = SysUpdateHelper.GetSystem(id);
 
@@ -235,7 +235,7 @@ namespace Justin.Updater.Server.Controllers
                 ClientName = clientName
             };
 
-            return View(nameof(PingList), model);
+            return View(model);
         }
 
         [HttpGet]
